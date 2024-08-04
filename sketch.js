@@ -404,15 +404,15 @@ function keyPressed() {
                 looping = true;
             }
         }
-        if (key == 'p' || key == 'P') {
-            makeField();
-        }
-        if (key == 'r' || key == 'R') {
-            window.location.reload();
-        }
-        if (key == 'm' || key == 'M') {
-            redraw();
-        }
+        // if (key == 'p' || key == 'P') {
+        //     makeField();
+        // }
+        // if (key == 'r' || key == 'R') {
+        //     window.location.reload();
+        // }
+        // if (key == 'm' || key == 'M') {
+        //     redraw();
+        // }
     }
 }
 
