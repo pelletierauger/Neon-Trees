@@ -1,3 +1,33 @@
+
+if (false) {
+
+let filter = 0;
+filteredTree = [];
+console.log("Full tree: " + staticTree.length);
+for (let i = 0; i < staticTree.length; i++) {
+    let t = staticTree[i];
+    let d = dist(t.x1, t.y1, t.x2, t.y2);
+    if (d > 3) {
+        filter++;
+        filteredTree.push(t);
+    }
+}
+console.log("Filtered tree: " + filter);
+
+Scene.prototype.update = function() {
+   for (let i = 0; i < filteredTree.length; i++) {
+        this.printObject(filteredTree[i]);
+    }
+};
+
+Scene.prototype.update = function() {
+   for (let i = 10; i < staticTree.length - 160; i++) {
+        this.printObject(staticTree[i]);
+    }
+};
+
+}
+
 staticTree = [
     {id: 1, x1: 0, x2: -0.0481481264072063, y1: 0, y2: -19.39994025140087},
 {id: 2, x1: -0.0481481264072063, x2: -0.14107612850020834, y1: -19.39994025140087, y2: -38.59971536431371},
