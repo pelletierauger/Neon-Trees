@@ -243,9 +243,9 @@ draw = function() {
     currentProgram = getProgram("smooth-line");
     gl.useProgram(currentProgram);
     drawLines();
-    currentProgram = getProgram("smooth-dots");
-    gl.useProgram(currentProgram);
-    drawAlligatorQuiet(currentProgram);
+    // currentProgram = getProgram("smooth-dots");
+    // gl.useProgram(currentProgram);
+    // drawAlligatorQuiet(currentProgram);
     if (exporting && frameCount < maxFrames) {
         frameExport();
     }

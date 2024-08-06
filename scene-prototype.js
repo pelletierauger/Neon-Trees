@@ -75,8 +75,8 @@ Scene.prototype.printObject = function(obj) {
             obj.y1 * -0.008 - 2, 
             obj.x2 * 0.008, 
             obj.y2 * -0.008 - 2, 
-            1/10+(map(osc,-1., 1., 0., 0.1)),
-            1, 0, 0, osc*0.5+0.5
+            1/20+(map(osc,-1., 1., 0., 0.1)),
+            1, 0, 0, map(osc, -1., 1., 0.4, 1)
         );
         // addLine(
         //     obj.x1 * 0.008, 

@@ -21,10 +21,10 @@ smoothLine.vertText = `
         vec2 pos1 = coordinates.zw * 1.5 + vec2(0.0, -0.5);
         pos0 += vec2(
             cos(pos0.x*pos0.y*4.+time*0.1), 
-            sin(pos0.x*pos0.y*4.+time*0.1))*0.04;
+            sin(pos0.x*pos0.y*4.+time*0.1))*0.01;
         pos1 += vec2(
             cos(pos1.x*pos1.y*4.+time*0.1), 
-            sin(pos1.x*pos1.y*4.+time*0.1))*0.04;
+            sin(pos1.x*pos1.y*4.+time*0.1))*0.01;
         // pos0 += vec2(
         //     cos(pos0.x*pos0.y*400.+time*1.1*sign(pos.x*pos0.y*400.)), 
         //     sin(pos1.x*pos1.y*400.+time*1.1*sign(pos.x*pos0.y*400.)))*0.0025;
