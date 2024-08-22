@@ -20,15 +20,70 @@ Scene.prototype.update = function() {
     }
 };
 
+}
+
 Scene.prototype.update = function() {
-   for (let i = 10; i < staticTree.length - 160; i++) {
+   for (let i = 0; i < staticTree.length; i++) {
         this.printObject(staticTree[i]);
     }
 };
 
-}
+staticTree = [{id: 1, x1: 0, x2: 0, y1: -1, y2: -0.99}]
 
-staticTree = [
+mousePressed = function() {
+    // console.log(mouseX, mouseY);
+};
+
+mouse = {x: 0, y: 0};
+movemouse = function(e) {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+};
+window.addEventListener('mousemove', movemouse);
+
+
+downmouse = function(e) {
+    // console.log(mouse);
+    findClosestSegment(mouse.x, mouse.y);
+};
+window.addEventListener('mousedown', downmouse);
+
+mouseDragged = function(e) {
+    // console.log(mouse);
+    findClosestSegment(mouse.x, mouse.y);
+};
+
+findClosestSegment = function(x, y) {
+    let w = 16/9;
+    let d = Infinity;
+    let closest = null;
+    for (let i = 0; i < staticTree.length; i++) {
+        let s = staticTree[i];
+        let mx1 = map(s.x1, -w, w, 0, 1280);
+        let my1 = map(s.y1, -1, 1, 760, 40);
+        let mx2 = map(s.x2, -w, w, 0, 1280);
+        let my2 = map(s.y2, -1, 1, 760, 40);
+        let d1 = dist(x, y, mx1, my1);
+        let d2 = dist(x, y, mx2, my2);
+        if (d1 < d) {
+            closest = [s.x1, s.y1, s.id];
+            d = d1;
+        }
+        if (d2 < d) {
+            closest = [s.x2, s.y2, s.id];
+            d = d2;
+        }
+    }
+    let mx = map(x, 0, 1280, -w, w);
+    let my = map(y, 760, 40, -1, 1);
+    if (closest !== null) {
+        let newSegment = {id: closest[2]+0.25, x1: closest[0], y1: closest[1], x2: mx, y2: my};
+        console.log(newSegment);
+        staticTree.push(newSegment);
+    }
+};
+
+bigStaticTree = [
     {id: 1, x1: 0, x2: -0.0481481264072063, y1: 0, y2: -19.39994025140087},
 {id: 2, x1: -0.0481481264072063, x2: -0.14107612850020834, y1: -19.39994025140087, y2: -38.59971536431371},
 {id: 3, x1: -0.14107612850020834, x2: -0.2822183266416519, y1: -38.59971536431371, y2: -56.2991526118621},

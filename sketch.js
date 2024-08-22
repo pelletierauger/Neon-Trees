@@ -1,4 +1,4 @@
-let looping = false;
+let looping = true;
 let keysActive = true;
 let socket, cnvs, ctx, canvasDOM;
 let fileName = "./frames/sketch";
@@ -14,7 +14,7 @@ let field = [];
 let makeField;
 let reached, unreached;
 let tree;
-let objMax = 1500;
+let objMax = Infinity;
 function setup() {
     socket = io.connect('http://localhost:8080');
     pixelDensity(1);

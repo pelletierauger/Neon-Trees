@@ -65,16 +65,16 @@ Scene.prototype.print = function() {
 };
 
 Scene.prototype.printObject = function(obj) {
-    if (objAmount < objMax && obj.id > 15) {
+    if (objAmount < objMax) {
         objAmount++;
         // console.log(obj);
         // sketch.line(obj.x1, obj.y1, obj.x2, obj.y2);
         let osc = Math.sin(obj.id*0.5-drawCount*1e-1);
         addLine(
-            obj.x1 * 0.008, 
-            obj.y1 * -0.008 - 2, 
-            obj.x2 * 0.008, 
-            obj.y2 * -0.008 - 2, 
+            obj.x1 * 1, 
+            obj.y1 * 1, 
+            obj.x2 * 1, 
+            obj.y2 * 1, 
             1/20+(map(osc,-1., 1., 0., 0.1)),
             1, 0, 0, map(osc, -1., 1., 0.4, 1)
         );

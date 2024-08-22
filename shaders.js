@@ -17,8 +17,8 @@ smoothLine.vertText = `
     void main(void) {
         float ratio = (resolution.y / resolution.x);
         vec2 pos = vec2(0., 0.);
-        vec2 pos0 = coordinates.xy * 1.5 + vec2(0.0, -0.5);
-        vec2 pos1 = coordinates.zw * 1.5 + vec2(0.0, -0.5);
+        vec2 pos0 = coordinates.xy * 1. + vec2(0.0, -0.);
+        vec2 pos1 = coordinates.zw * 1. + vec2(0.0, -0.);
         pos0 += vec2(
             cos(pos0.x*pos0.y*4.+time*0.1), 
             sin(pos0.x*pos0.y*4.+time*0.1))*0.01;
@@ -90,7 +90,7 @@ smoothLine.fragText = `
         
         gl_FragColor.b += 0.15;
         gl_FragColor.a = min(1., gl_FragColor.a + pow(col, 2.) *  0.25) * 0.5;
-        // gl_FragColor.rgb = gl_FragColor.gbr;
+        gl_FragColor.rgb = gl_FragColor.gbr;
     }
     // endGLSL
 `;
