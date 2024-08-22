@@ -19,12 +19,12 @@ smoothLine.vertText = `
         vec2 pos = vec2(0., 0.);
         vec2 pos0 = coordinates.xy * 1.5 + vec2(0.0, -0.5);
         vec2 pos1 = coordinates.zw * 1.5 + vec2(0.0, -0.5);
-        pos0 += vec2(
-            cos(pos0.x*pos0.y*4.+time*0.1), 
-            sin(pos0.x*pos0.y*4.+time*0.1))*0.01;
-        pos1 += vec2(
-            cos(pos1.x*pos1.y*4.+time*0.1), 
-            sin(pos1.x*pos1.y*4.+time*0.1))*0.01;
+        // pos0 += vec2(
+        //     cos(pos0.x*pos0.y*4.+time*0.1), 
+        //     sin(pos0.x*pos0.y*4.+time*0.1))*0.01;
+        // pos1 += vec2(
+        //     cos(pos1.x*pos1.y*4.+time*0.1), 
+        //     sin(pos1.x*pos1.y*4.+time*0.1))*0.01;
         // pos0 += vec2(
         //     cos(pos0.x*pos0.y*400.+time*1.1*sign(pos.x*pos0.y*400.)), 
         //     sin(pos1.x*pos1.y*400.+time*1.1*sign(pos.x*pos0.y*400.)))*0.0025;
@@ -44,6 +44,9 @@ smoothLine.vertText = `
             pos = pos1 + vec2(cos(a + pi25), sin(a + pi25)) * width;
         }
         pos.x *= ratio;
+        pos.xy *= 0.25;
+        pos.y -= 0.8;
+        // pos.x += 0.25;
         gl_Position = vec4(pos, 0.0, 1.0);
         wh = vec2(width * sin(pi75), length(pos1 - pos0));
         c = color;
@@ -80,16 +83,17 @@ smoothLine.fragText = `
         col = pow(col, 3.) * 0.75 + pow(col, 43.);
         col = smoothstep(0., 1., col);
         // col = mix(pow(col, 10.)*0.25, col, sin(time*0.1+pos.y*0.5e1)*0.5+0.5);
-                // col = mix(pow(col, 10.)*0.2, col, sin(-t*0.1+pos.y*0.5e1)*0.5+0.5);
-        if (col < 0.01) {
-            discard;
-        }
-        gl_FragColor = vec4(c.rgb, c.a * (max(col, 0.) - (rando * 0.05)));
+                col = mix(pow(col, 10.)*0.2, col, sin(t*0.025+(pos.y-pos.x)*0.125e1)*0.5+0.5);
+        // if (col < 0.001) {
+            // discard;
+        // }
+        gl_FragColor = vec4(c.rgb, c.a * col - (rando * 0.01));
         gl_FragColor.g = pow(col, 2.) *  0.2;
         gl_FragColor.b = pow(col, 2.) *  0.2;
         
         gl_FragColor.b += 0.15;
-        gl_FragColor.a = min(1., gl_FragColor.a + pow(col, 2.) *  0.25) * 0.5;
+        // gl_FragColor.a = min(1., gl_FragColor.a + pow(col, 2.) *  0.25) * 0.5;
+        // gl_FragColor.rgb *= pow(gl_FragColor.a, 0.1);
         // gl_FragColor.rgb = gl_FragColor.gbr;
     }
     // endGLSL

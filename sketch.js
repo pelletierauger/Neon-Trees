@@ -14,7 +14,9 @@ let field = [];
 let makeField;
 let reached, unreached;
 let tree;
-let objMax = 1500;
+let objMax = Infinity;
+let gathered = false;
+let growth = true;
 function setup() {
     socket = io.connect('http://localhost:8080');
     pixelDensity(1);
@@ -142,8 +144,9 @@ function setup() {
         pairs = [];
     };
     makeField();
-    let dna = new DNA();
-    tree = new Tree(0, 0, dna);
+    // let dna = new DNA();
+    // tree  = new Tree(0, 0, dna);
+    newGeneration();
 }
 
 if (false) {
@@ -405,15 +408,15 @@ function keyPressed() {
                 looping = true;
             }
         }
-        // if (key == 'p' || key == 'P') {
-        //     makeField();
-        // }
+        if (key == 'g' || key == 'G') {
+            growth = !growth;
+        }
         // if (key == 'r' || key == 'R') {
         //     window.location.reload();
         // }
-        // if (key == 'm' || key == 'M') {
-        //     redraw();
-        // }
+        if (key == 'n' || key == 'N') {
+            newGeneration();
+        }
     }
 }
 

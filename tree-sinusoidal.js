@@ -1,8 +1,10 @@
-let Tree = function(x, y, dna) {
+let Tree = function(x, y, dna, alpha = 1, width = 1) {
     this.pos = { x: x, y: y };
     this.dna = dna;
     this.angle = Math.PI / 2;
     this.segmentID = 0;
+    this.alpha = alpha;
+    this.width = width;
     this.root = new Segment(this, "forward");
     scene.trees.push(this);
 };
@@ -28,6 +30,8 @@ let Segment = function(parent, direction) {
     this.segmentID = parent.segmentID + 1;
     this.isBranch = (direction == "left" || direction == "right");
     this.branchedDirection = direction;
+    this.alpha = parent.alpha;
+    this.width = parent.width;
     let fL = this.dna.branchingFrequencyLeft;
     let oL = this.dna.branchingOffsetLeft;
     let fR = this.dna.branchingFrequencyRight;
@@ -39,46 +43,37 @@ let Segment = function(parent, direction) {
         this.energy = this.dna.initialEnergy;
         this.SegmentPosition = 0;
         this.lastBranching = "forward";
-
         this.coin = (Math.random() < 0.5) ? -1 : 1;
         // this.angle = this.parent.angle;
     } else {
         this.energy = this.parent.energy * this.dna.energyLoss;
-
         if (this.isBranch) {
             this.SegmentPosition = 0;
             this.lastBranching = direction;
-
             this.coin = (Math.random() < 0.5) ? -1 : 1;
         } else {
             this.SegmentPosition = this.parent.SegmentPosition + 1;
             this.lastBranching = parent.lastBranching;
-
             if (this.parent.children.length == 1) {
                 this.coin = (Math.random() < 0.5) ? -1 : 1;
             } else {
                 this.coin = this.parent.coin;
             }
-
         }
-
     }
     this.angle = this.parent.angle;
     this.angleDelta = 0;
     // if (direction == "left") {
     //     this.angle = this.parent.angle + this.dna.branchingAngle;
     //     this.angle = this.parent.angle;
-
     //     // this.angle = this.parent.angle + (this.dna.branchingAngle * sketch.map(this.segmentID, 10, 30, 5, 0.1));
     // } else if (direction == "forward") {
     //     this.angle = this.parent.angle;
     // } else if (direction == "right") {
     //     this.angle = this.parent.angle - this.dna.branchingAngle;
     //     this.angle = this.parent.angle;
-
     //     // this.angle = this.parent.angle - (this.dna.branchingAngle * sketch.map(this.segmentID, 10, 30, 5, 0.1));
     // }
-
     this.children = [];
     this.length = 0;
 };
@@ -176,9 +171,20 @@ Segment.prototype.gatherShapes = function(x, y) {
     // sketch.strokeWeight(sketch.map(this.segmentID, 0, 40, 50, 5));
     // sketch.line(x, y, newX, newY);
     // console.log("x: " + x + ", y: " + y + ", newX: " + newX + " newY: " + newY);
-    scene.registerLine(x, y, newX, newY, this.segmentID);
+    scene.registerLine(x, y, newX, newY, this.segmentID, this.alpha, this.width);
     // scene.registerLine(0, 1, 2, 3);
     for (let i = 0; i < this.children.length; i++) {
         this.children[i].gatherShapes(newX, newY);
     }
+};
+
+Segment.prototype.sway = function() {
+    this.angle += Math.sin(this.segmentID * 0.1 + drawCount * 0.02) * 0.005;
+    for (let i = 0; i < this.children.length; i++) {
+        this.children[i].sway();
+    }
+}
+
+Tree.prototype.sway = function() {
+    this.root.sway();
 };
