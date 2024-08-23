@@ -35,19 +35,17 @@ Scene.prototype.registerLine = function(x1, y1, x2, y2, id, alpha, width) {
 };
 
 Scene.prototype.update = function() {
-    if (growth) {
+    if (growth && scene.frameCount < growthMax) {
         for (let i = 0; i <  this.trees.length; i++) {
-        this.trees[i].grow();
+            this.trees[i].grow();
         }
-        }
-        // console.log("aaahww");
+        this.frameCount++;
+    }
     for (let i = 0; i <  this.trees.length; i++) {
         
         this.trees[i].sway();
         this.trees[i].gatherShapes();
     }
-        gathered = true;
-    
     this.print();
    // for (let i = 10; i < staticTree.length - 160; i++) {
    //      this.printObject(staticTree[i]);
@@ -77,7 +75,6 @@ Scene.prototype.print = function() {
             this.printObject(this.shapes[i]);
         }
         this.shapes = [];
-        this.frameCount++;
     } else {
         // if ()
     }
@@ -144,8 +141,8 @@ Scene.prototype.printObject = function(obj) {
             obj[1] * -0.008 - 2, 
             obj[2] * 0.008, 
             obj[3] * -0.008 - 2, 
-            obj[6]*1.5+map(osc,-1., 1., 0., 0.2),
-            1, 0, 0, map(osc, -1., 1., 0.4, 1)*Math.pow(obj[5],2)+0
+            obj[6]*0.75+map(osc,-1., 1., 0., 0.2)+0.2,
+            1, 0, 0, map(osc, -1., 1., 0.4, 1)*Math.pow(obj[5],2)+0.05
         );
         // osc = Math.sin((obj.x1+obj.y1)*0.005-drawCount*0.5e-1);
         // addLine(
