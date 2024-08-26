@@ -46,7 +46,7 @@ smoothLine.vertText = `
         pos.x *= ratio;
         pos.xy *= 0.25;
         pos.y -= 0.8;
-        pos.x += 0.1;
+        pos.x -= 0.1;
         gl_Position = vec4(pos, 0.0, 1.0);
         wh = vec2(width * sin(pi75), length(pos1 - pos0));
         c = color;
@@ -111,7 +111,7 @@ let smoothDots = new ShaderProgram("smooth-dots");
 
 smoothDots.vertText = `
     // beginGLSL
-    attribute vec2 coordinates;
+    attribute vec3 coordinates;
     uniform float time;
     uniform vec2 resolution;
     varying float t;
@@ -121,16 +121,20 @@ smoothDots.vertText = `
     }
     void main(void) {
         vec2 pos = coordinates.xy;
-        pos += vec2(
-            cos(pos.x*pos.y*4.+time*0.1*sign(pos.x*pos.y*40.)), 
-            sin(pos.x*pos.y*4.+time*0.1*sign(pos.x*pos.y*40.)))*0.01;
-        pos += vec2(
-            cos(pos.x*pos.y*400.+time*1.1*sign(pos.x*pos.y*400.)), 
-            sin(pos.x*pos.y*400.+time*1.1*sign(pos.x*pos.y*400.)))*0.0025;
+        // pos += vec2(
+        //     cos(pos.x*pos.y*4.+time*0.1*sign(pos.x*pos.y*40.)), 
+        //     sin(pos.x*pos.y*4.+time*0.1*sign(pos.x*pos.y*40.)))*0.01;
+        // pos += vec2(
+        //     cos(pos.x*pos.y*400.+time*1.1*sign(pos.x*pos.y*400.)), 
+        //     sin(pos.x*pos.y*400.+time*1.1*sign(pos.x*pos.y*400.)))*0.0025;
+        pos.xy = pos.xy * 1.5 + vec2(0.0, -0.5);
         pos.x *= resolution.y / resolution.x;
+        pos.xy *= 0.25;
+        pos.y -= 0.8;
+        pos.x -= 0.1;
         gl_Position = vec4(pos.x, pos.y, 0.0, 1.0);
-        gl_PointSize = 15.;
-        gl_PointSize += (sin((coordinates.y*0.02+time*2e-1))*0.5+0.5)*4.;
+        gl_PointSize = coordinates.z;
+        // gl_PointSize += (sin((coordinates.y*0.02+time*2e-1))*0.5+0.5)*4.;
     }
     // endGLSL
 `;
@@ -160,6 +164,8 @@ smoothDots.fragText = `
 smoothDots.vertText = smoothDots.vertText.replace(/[^\x00-\x7F]/g, "");
 smoothDots.fragText = smoothDots.fragText.replace(/[^\x00-\x7F]/g, "");
 smoothDots.init();
+
+if (false) {
 
 // Spatially fluctuating smoothDots
 smoothDots.vertText = `
@@ -220,3 +226,5 @@ smoothDots.fragText = `
 smoothDots.vertText = smoothDots.vertText.replace(/[^\x00-\x7F]/g, "");
 smoothDots.fragText = smoothDots.fragText.replace(/[^\x00-\x7F]/g, "");
 smoothDots.init();
+
+}

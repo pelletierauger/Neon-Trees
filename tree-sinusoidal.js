@@ -31,6 +31,7 @@ let Segment = function(parent, direction) {
     this.isBranch = (direction == "left" || direction == "right");
     this.branchedDirection = direction;
     this.alpha = parent.alpha;
+    this.alphaScalar = 0;
     this.width = parent.width;
     let fL = this.dna.branchingFrequencyLeft;
     let oL = this.dna.branchingOffsetLeft;
@@ -168,10 +169,15 @@ Segment.prototype.gatherShapes = function(x, y) {
     let l = this.length;
     var newX = x + Math.cos(a) * l;
     var newY = y - Math.sin(a) * l;
+    this.x0 = x;
+    this.y0 = y;
+    this.x1 = newX;
+    this.y1 = newY;
+    this.alphaScalar *= 0.995;
     // sketch.strokeWeight(sketch.map(this.segmentID, 0, 40, 50, 5));
     // sketch.line(x, y, newX, newY);
     // console.log("x: " + x + ", y: " + y + ", newX: " + newX + " newY: " + newY);
-    scene.registerLine(x, y, newX, newY, this.segmentID, this.alpha, this.width);
+    scene.registerLine(x, y, newX, newY, this.segmentID, this.alpha * this.alphaScalar, this.width);
     // scene.registerLine(0, 1, 2, 3);
     for (let i = 0; i < this.children.length; i++) {
         this.children[i].gatherShapes(newX, newY);
