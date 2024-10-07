@@ -10,6 +10,7 @@ let indices = [];
 let amountOfLines = 0;
 let drawCount = 0;
 let vertex_buffer, indices2_buffer, Index_Buffer, color_buffer, width_buffer, uv_buffer, dots_buffer;
+let vbuffer;
 let field = [];
 let makeField;
 let reached, unreached;
@@ -42,6 +43,9 @@ function setup() {
     width_buffer = gl.createBuffer();
     uv_buffer = gl.createBuffer();
     dots_buffer = gl.createBuffer();
+
+    vbuffer = gl.createBuffer();
+    
     shadersReadyToInitiate = true;
     initializeShaders();
     currentProgram = getProgram("smooth-line");
@@ -135,18 +139,31 @@ function setup() {
 }
 
 singCount = 0;
+flakes = [];
+maps = function(n,sa1,so1,sa2,so2) {
+    return (n-sa1)/(so1-sa1)*(so2-sa2)+sa2;
+};
+for (let i = 0; i < 5500; i++) {
+    let x = Math.random() * 2 - 1;
+    // do {x = Math.random() * 2 - 1} while (Math.abs(x) < 0.1);
+    let y = maps(Math.random(), 0, 1, -1, 1);
+    let z = (Math.random() * 2 - 1) * 2 - 1;
+    flakes.push([x, y, z, i])
+}
+flakes.sort((a, b) => b[2] - a[2]);
 
 draw = function() {
     // for (let i = 0; i < 5; i++) {
     //     makeTree();  
     // }
+        gl.clear(gl.COLOR_BUFFER_BIT);
     resetLines();
     dotPositions = [];
     singCount = 0;
     objAmount = 0;
     scene.update();
     if (drawCount % spawnFreq == 0) {
-        let walker = new Walker(random(scene.trees).root, 0.5);
+        // let walker = new Walker(random(scene.trees).root, 0.5);
     }
     if (walking) {
         for (let i = 0; i < walkers.length; i++) {
@@ -165,12 +182,36 @@ draw = function() {
     //     );
     // }
     // addLine(0.9, 0.9, 0.9, -0.9, 1/15);
+        currentProgram = getProgram("misty-river");
+    gl.useProgram(currentProgram);
+    drawRectangle(currentProgram, 0, 0, 1, 1);
     currentProgram = getProgram("smooth-line");
     gl.useProgram(currentProgram);
     drawLines();
-    currentProgram = getProgram("smooth-dots");
-    gl.useProgram(currentProgram);
-    drawSmoothDots(currentProgram);
+        vertices = [];
+    for (let i = 0; i < flakes.length; i++) {
+        flakes[i][0] += 0.0025 * 0.5;
+        flakes[i][1] -= 0.005 * 0.5;
+        flakes[i][0] += Math.sin(flakes[i][3]*1e1)*2e-3;
+        if (flakes[i][0] > 2 || flakes[i][1] < -1) {
+            let y = 1;
+            flakes[i][1] = y;
+            let z =( Math.random() * 2 - 1) * 2 - 1;
+            flakes[i][2] = z;
+            let x = Math.random() * 2 - 1;
+            flakes[i][0] = x/z;            
+        }
+    }
+    // flakes.sort((a, b) => b[2] - a[2]);
+    for (let i = 0; i < flakes.length; i++) {
+        vertices.push(flakes[i][0], flakes[i][1], flakes[i][2]);
+    }
+        // currentProgram = getProgram("smooth-dots-3D");
+    // gl.useProgram(currentProgram);
+    // draw3DDots(currentProgram);
+    // currentProgram = getProgram("smooth-dots");
+    // gl.useProgram(currentProgram);
+    // drawSmoothDots(currentProgram);
     if (exporting && frameCount < maxFrames) {
         frameExport();
     }
@@ -288,7 +329,6 @@ drawLines = function() {
     gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);    
     timeUniformLocation = gl.getUniformLocation(currentProgram, "time");
     gl.uniform1f(timeUniformLocation, drawCount);
-    gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 };
 
@@ -376,4 +416,41 @@ drawSmoothDots = function(selectedProgram) {
     let resolutionUniformLocation = gl.getUniformLocation(selectedProgram, "resolution");
     gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
     gl.drawArrays(gl.POINTS, 0, dotPositions.length / 3);
-}
+};
+
+drawRectangle = function(selectedProgram, x0, y0, x1, y1) {
+    let triangleVertices = new Float32Array([
+        x0, y0, x1, y0, x1, y1, // Triangle 1
+        x0, y0, x1, y1, x0, y1  // Triangle 2
+    ]);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, triangleVertices, gl.STATIC_DRAW);
+    let positionLocation = gl.getAttribLocation(selectedProgram, "position");
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(positionLocation);
+    let timeUniformLocation = gl.getUniformLocation(selectedProgram, "time");
+    gl.uniform1f(timeUniformLocation, drawCount);
+    let resolutionUniformLocation = gl.getUniformLocation(selectedProgram, "resolution");
+    gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+    // console.log(cnvs.width, cnvs.height);
+};
+
+clearSelection = function() {};
+
+draw3DDots = function(selectedProgram) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, dots_buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    // Get the attribute location
+    var coord = gl.getAttribLocation(selectedProgram, "coordinates");
+    // Point an attribute to the currently bound VBO
+    gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
+    // Enable the attribute
+    gl.enableVertexAttribArray(coord);
+    let timeUniformLocation = gl.getUniformLocation(selectedProgram, "time");
+    gl.uniform1f(timeUniformLocation, drawCount);
+    let resolutionUniformLocation = gl.getUniformLocation(selectedProgram, "resolution");
+    gl.uniform2f(resolutionUniformLocation, cnvs.width, cnvs.height);
+    gl.drawArrays(gl.POINTS, 0, vertices.length/3);
+};

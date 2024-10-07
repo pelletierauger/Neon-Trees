@@ -177,7 +177,8 @@ Segment.prototype.gatherShapes = function(x, y) {
     // sketch.strokeWeight(sketch.map(this.segmentID, 0, 40, 50, 5));
     // sketch.line(x, y, newX, newY);
     // console.log("x: " + x + ", y: " + y + ", newX: " + newX + " newY: " + newY);
-    scene.registerLine(x, y, newX, newY, this.segmentID, this.alpha * this.alphaScalar, this.width);
+    // scene.registerLine(x, y, newX, newY, this.segmentID, this.alpha * this.alphaScalar, this.width);
+    scene.registerLine(x, y, newX, newY, this.segmentID, this.alpha, this.width);
     // scene.registerLine(0, 1, 2, 3);
     for (let i = 0; i < this.children.length; i++) {
         this.children[i].gatherShapes(newX, newY);
@@ -185,7 +186,7 @@ Segment.prototype.gatherShapes = function(x, y) {
 };
 
 Segment.prototype.sway = function() {
-    this.angle += Math.sin(this.segmentID * 0.1 + drawCount * 0.02) * 0.005;
+    this.angle += Math.sin(this.segmentID * 0.1 + drawCount * 0.02) * 0.0025*this.alpha;
     for (let i = 0; i < this.children.length; i++) {
         this.children[i].sway();
     }

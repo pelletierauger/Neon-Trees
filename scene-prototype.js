@@ -123,7 +123,7 @@ Scene.prototype.printObject = function(obj) {
 };
 
 Scene.prototype.printObject = function(obj) {
-    if (objAmount < objMax && obj[4] < 35) {
+    if (objAmount < objMax && obj[4] < 26) {
         objAmount++;
         // console.log(obj);
         // sketch.line(obj.x1, obj.y1, obj.x2, obj.y2);
@@ -136,14 +136,30 @@ Scene.prototype.printObject = function(obj) {
         //     (1/3+(map(osc,-1., 1., 0., 0.4))) *( obj.width+0.2),
         //     1, 0, 0, map(osc, -1., 1., 0.4, 1)*Math.pow(obj.alpha,4)
         // );
-        addLine(
+        // addLine(
+        //     obj[0] * 0.008, 
+        //     obj[1] * -0.008 - 2, 
+        //     obj[2] * 0.008, 
+        //     obj[3] * -0.008 - 2, 
+        //     Math.min(1, (obj[6])/obj[5]),
+        //     1, 0, 0, obj[5]
+        // );
+                addLine(
             obj[0] * 0.008, 
             obj[1] * -0.008 - 2, 
             obj[2] * 0.008, 
             obj[3] * -0.008 - 2, 
-            obj[6]*0.75+map(osc,-1., 1., 0., 0.2)+0.2,
-            1, 0, 0, map(osc, -1., 1., 0.4, 1)*Math.pow(obj[5],2)+0.05
+            1/1,
+            1, 0, 0, obj[5]
         );
+        //                 addLine(
+        //     obj[0] * 0.008, 
+        //     obj[1] * -0.008 - 2, 
+        //     obj[2] * 0.008, 
+        //     obj[3] * -0.008 - 2, 
+        //     1/2,
+        //     1, 0, 0, 1
+        // );
         // osc = Math.sin((obj.x1+obj.y1)*0.005-drawCount*0.5e-1);
         // addLine(
         //     obj.x1 * 0.008, 
